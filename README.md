@@ -39,9 +39,7 @@ The repo includes a minimal workflow at [/.github/workflows/ci.yml](/Users/nikos
 - `pull_request` and `push` to `main` run `pnpm build` and `pnpm exec cdk synth`.
 - `push` to `main` also assumes the AWS deploy role through GitHub OIDC and runs `cdk deploy`.
 
-Required GitHub secret:
-
-- `AWS_ACCOUNT_ID`
+No GitHub secrets are required for the deploy workflow. The workflow assumes the fixed role ARN for account `180971085012`.
 
 The stack creates the AWS role named `aws-hosted-podcast-github-deploy` plus the GitHub OIDC provider. The first time, deploy the stack once with existing AWS credentials so those resources exist before GitHub Actions can assume the role.
 
