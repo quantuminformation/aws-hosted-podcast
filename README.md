@@ -4,21 +4,15 @@ Static AWS hosting scaffold for `The Nikos Show`.
 
 ## What this stack provides
 
-- Private S3 bucket for podcast assets.
-- CloudFront distribution in front of the bucket.
-- HTTPS-only delivery.
-- Separate cache behavior for `feed.xml` so the RSS feed can change quickly.
-- Long-lived edge caching for episode audio and artwork.
+- Public S3 bucket for podcast assets.
+- HTTPS object URLs for `feed.xml`, episode audio, and artwork.
+- Simple deploy path that avoids CloudFront for the MVP.
 
 ## Current MVP setup
 
-This repository is wired for a quick deploy with the CloudFront default domain first.
+The stack now uses S3 only.
 
-Later, when you are ready to use `podcast.nikoskatsikanis.com`, create the ACM certificate in `us-east-1`, validate it with Namecheap DNS, then redeploy the stack with:
-
-```bash
-cdk deploy -c customDomainName=podcast.nikoskatsikanis.com -c certificateArn=arn:aws:acm:us-east-1:123456789012:certificate/...
-```
+Feed and media URLs are direct S3 HTTPS object URLs from the bucket output.
 
 ## Deploy
 
@@ -41,15 +35,7 @@ The repo includes a minimal workflow at [/.github/workflows/ci.yml](/Users/nikos
 
 No GitHub secrets are required for the deploy workflow. The workflow assumes the fixed role ARN for account `180971085012`.
 
-The stack creates the AWS role named `aws-hosted-podcast-github-deploy` plus the GitHub OIDC provider. The first time, deploy the stack once with existing AWS credentials so those resources exist before GitHub Actions can assume the role.
-
-## DNS for Namecheap later
-
-Once the distribution is deployed and the cert is attached, add a `CNAME` record in Namecheap:
-
-- Host: `podcast`
-- Value: the CloudFront distribution domain name from the stack output
-- TTL: default or 30 minutes
+The stack creates the AWS role named `aws-hosted-podcast-github-deploy` and trusts the existing GitHub OIDC provider in the account. The first time, deploy the stack once with existing AWS credentials so the role exists before GitHub Actions can assume it.
 
 ## Next step
 
