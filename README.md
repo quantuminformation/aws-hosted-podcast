@@ -35,7 +35,7 @@ The repo includes a minimal workflow at [/.github/workflows/ci.yml](/Users/nikos
 
 No GitHub secrets are required for the deploy workflow. The workflow assumes the fixed role ARN for account `180971085012`.
 
-The stack creates the AWS role named `aws-hosted-podcast-github-deploy` and trusts the existing GitHub OIDC provider in the account. The first time, deploy the stack once with existing AWS credentials so the role exists before GitHub Actions can assume it.
+The stack creates the AWS role named `aws-hosted-podcast-github-deploy` and trusts the existing GitHub OIDC provider in the account. The first time, deploy the stack once with existing AWS credentials so the role exists before GitHub Actions can assume it. After that, releases are handled by GitHub Actions on pushes to `main` with no CLI deploy step.
 
 ## Next step
 
