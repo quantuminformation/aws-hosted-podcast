@@ -1,6 +1,0 @@
-{
-  "app": "node dist/bin/podcast-hosting.js",
-  "context": {
-    "aws-cdk:enableDiffNoFail": "true"
-  }
-}

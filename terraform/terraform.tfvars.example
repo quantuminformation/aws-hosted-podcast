@@ -1,0 +1,8 @@
+aws_region          = "us-east-1"
+podcast_bucket_name = "podcasthostingstack-podcastbucket09986f6a-7benur70xfx0"
+
+# Enable after deciding the final public feed hostname.
+enable_cloudfront = false
+
+# cloudfront_alias    = "podcast.example.com"
+# acm_certificate_arn = "arn:aws:acm:us-east-1:180971085012:certificate/..."

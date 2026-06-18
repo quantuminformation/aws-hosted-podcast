@@ -4,3 +4,8 @@ cdk.out
 dist
 episodes/*.mp3
 .DS_Store
+__pycache__
+.terraform
+*.tfstate
+*.tfstate.*
+terraform.tfvars

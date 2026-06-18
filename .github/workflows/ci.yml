@@ -16,26 +16,29 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          node-version: 25
+          python-version: "3.13"
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
+      - name: Compile Python scripts
+        run: python -m py_compile scripts/*.py
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          version: 9.6.0
+          terraform_version: 1.9.8
 
-      - name: Install
-        run: pnpm install --frozen-lockfile
+      - name: Terraform fmt
+        run: terraform -chdir=terraform fmt -check
 
-      - name: Build
-        run: pnpm build
+      - name: Terraform init
+        run: terraform -chdir=terraform init -backend=false
 
-      - name: Synthesize
-        run: pnpm exec cdk synth
+      - name: Terraform validate
+        run: terraform -chdir=terraform validate
 
-  deploy:
+  plan:
     runs-on: ubuntu-latest
     needs: sanity
     if: github.event_name == 'push'
@@ -44,28 +47,14 @@ jobs:
       id-token: write
     env:
       AWS_REGION: us-east-1
-      AWS_ACCOUNT_ID: "180971085012"
-      CDK_DEFAULT_ACCOUNT: "180971085012"
-      CDK_DEFAULT_REGION: us-east-1
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
         with:
-          node-version: 25
-
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9.6.0
-
-      - name: Install
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
+          terraform_version: 1.9.8
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -74,5 +63,8 @@ jobs:
           aws-region: us-east-1
           role-session-name: github-actions-podcast-deploy
 
-      - name: Deploy
-        run: pnpm exec cdk deploy --require-approval never
+      - name: Terraform init
+        run: terraform -chdir=terraform init -backend=false
+
+      - name: Terraform plan
+        run: terraform -chdir=terraform plan -var "podcast_bucket_name=podcasthostingstack-podcastbucket09986f6a-7benur70xfx0"
